@@ -1,0 +1,7 @@
+#Ignore build folder
+Backend/Build/
+
+#ignore vscode file
+.vscode
+
+Backend/include/json.hpp
