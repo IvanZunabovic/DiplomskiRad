@@ -3,6 +3,7 @@
 #include <IResourceFactory.h>
 #include <tuple>
 #include <string>
+#include "Object3DModel.h"
 
 class ObjResourceFactory : public IResourceFactory
 {
@@ -14,6 +15,5 @@ private:
     shared_ptr<Resource> _resource;
     tuple<string> get_path_parameters(const shared_ptr<Session> session);
     void get_handler(const shared_ptr<Session> session);
-    float load_object(string object);
-    string to_json(float result);
+    Object3DModel load_object(string object);
 };

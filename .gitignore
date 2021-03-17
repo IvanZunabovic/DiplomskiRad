@@ -5,3 +5,5 @@ Backend/Build/
 .vscode
 
 Backend/include/json.hpp
+
+node_modules
