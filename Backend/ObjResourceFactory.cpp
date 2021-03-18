@@ -1,4 +1,5 @@
 #include <ObjResourceFactory.h>
+#include <Object3DModel.h>
 
 #include <sstream>
 #include <iomanip>
@@ -22,10 +23,11 @@ shared_ptr<Resource> ObjResourceFactory::get_resource() const
 void ObjResourceFactory::get_handler(const shared_ptr<Session> session)
 {
     const auto [object] = get_path_parameters(session);
-    const auto result = load_object(object);
-    auto content = to_json(result);
+    Object3DModel result = load_object(object);
 
-    session->close(OK, content, {{"Content-Lengt", to_string(content.size())}});
+    nlohmann::json jsonResult = result.getJson();
+
+    session->close(OK, jsonResult.dump(), {{"Content-Lengt", to_string(jsonResult.size())}});
 }
 
 tuple<string> ObjResourceFactory::get_path_parameters(const shared_ptr<Session> session)
@@ -36,17 +38,8 @@ tuple<string> ObjResourceFactory::get_path_parameters(const shared_ptr<Session> 
     return make_tuple(object);
 }
 
-float ObjResourceFactory::load_object(string object)
+Object3DModel ObjResourceFactory::load_object(string object)
 {
-    return 1.0;
-}
-
-string ObjResourceFactory::to_json(float result)
-{
-    ostringstream str_stream;
-    str_stream << result;
-
-    nlohmann::json jsonResult = {{"result", str_stream.str()}};
-
-    return jsonResult.dump();
+    Object3DModel new3DObject = Object3DModel("C:\\Users\\ivanz\\Desktop\\oloid\\oloid64_tri.obj");
+    return new3DObject;
 }
