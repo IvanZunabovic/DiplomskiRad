@@ -38,6 +38,67 @@ public:
     }
 };
 
+class Plane
+{
+public:
+    double a;
+    double b;
+    double c;
+    double d;
+
+    Plane(Vertex point1, Vertex point2, Vertex point3)
+    {
+        equation_plane(point1, point2, point3);
+    }
+
+    bool checkIfPointOnPlane(Vertex point)
+    {
+        return a * point.x + b * point.y + c * point.z + d < 0.0000001;
+    }
+
+private:
+    void equation_plane(Vertex point1, Vertex point2, Vertex point3)
+    {
+        float a1 = point2.x - point1.x;
+        float b1 = point2.y - point1.y;
+        float c1 = point2.z - point1.z;
+        float a2 = point3.x - point1.x;
+        float b2 = point3.y - point1.y;
+        float c2 = point3.z - point1.z;
+        a = b1 * c2 - b2 * c1;
+        b = a2 * c1 - a1 * c2;
+        c = a1 * b2 - b1 * a2;
+        d = (-a * point1.x - b * point1.y - c * point1.z);
+    }
+};
+
+class Line
+{
+public:
+    double xt;
+    double x0;
+    double yt;
+    double y0;
+    double zt;
+    double z0;
+
+    Line(Vertex startingPoint, Vertex endingPoint)
+    {
+        equation_line(startingPoint, endingPoint);
+    }
+
+private:
+    void equation_line(Vertex startingPoint, Vertex endingPoint)
+    {
+        xt = endingPoint.x - startingPoint.x;
+        x0 = startingPoint.x;
+        yt = endingPoint.y - startingPoint.y;
+        y0 = startingPoint.y;
+        zt = endingPoint.z - startingPoint.z;
+        z0 = startingPoint.z;
+    }
+};
+
 class Object3DModel
 {
 public:
@@ -64,7 +125,7 @@ public:
         vector<vector<double>> verticesResponse;
         vector<vector<unsigned int>> facesResponse;
 
-        for (i = 0; i < _vertices.size() - 1; i++)
+        for (i = 0; i < _vertices.size(); i++)
         {
             vector<double> vertexCoordinates;
             vertexCoordinates.push_back(_vertices[i].x);
@@ -102,26 +163,37 @@ private:
 
         while (!fin.eof())
         {
-            char simbol;
+            char sign = NULL;
             float firstValue = 0, secondValue = 0, thirdValue = 0;
+            string line = "";
 
-            fin >> simbol >> firstValue >> secondValue >> thirdValue;
+            getline(fin, line);
 
-            switch (simbol)
+            istringstream ss(line);
+
+            ss >> sign;
+
+            if (sign == 'v' || sign == 'f')
             {
-            case 'v':
-            {
-                _vertices.push_back(Vertex(firstValue, secondValue, thirdValue));
-            }
-            break;
-            case 'f':
-            {
-                _faces.push_back(Face(firstValue, secondValue, thirdValue));
-            }
-            break;
-            default:
+                ss >> firstValue >> secondValue >> thirdValue;
+
+                switch (sign)
+                {
+                case 'v':
+                {
+                    _vertices.push_back(Vertex(firstValue, secondValue, thirdValue));
+                }
                 break;
+                case 'f':
+                {
+                    _faces.push_back(Face(firstValue - 1, secondValue - 1, thirdValue - 1));
+                }
+                break;
+                default:
+                    break;
+                }
             }
+            //fin >> sign >> firstValue >> secondValue >> thirdValue;
         }
 
         fin.close();

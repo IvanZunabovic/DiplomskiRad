@@ -15,5 +15,6 @@ private:
     shared_ptr<Resource> _resource;
     tuple<string> get_path_parameters(const shared_ptr<Session> session);
     void get_handler(const shared_ptr<Session> session);
+    void get_selected_faces_handler(const shared_ptr<Session> session);
     Object3DModel load_object(string object);
 };
